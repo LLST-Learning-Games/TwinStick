@@ -1173,6 +1173,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 5076617722959906162, guid: 4f9089b65ad825b4ab2c5e7cd641e383, type: 3}
+      propertyPath: _targetDistance
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5076617722959906162, guid: 4f9089b65ad825b4ab2c5e7cd641e383, type: 3}
+      propertyPath: _projectilePrefab
+      value: 
+      objectReference: {fileID: 2675222265695702198, guid: d1d9731a31fd05e48b6c2d2bdc474b65, type: 3}
+    - target: {fileID: 5076617722959906162, guid: 4f9089b65ad825b4ab2c5e7cd641e383, type: 3}
+      propertyPath: _fixedTargetDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5076617722959906162, guid: 4f9089b65ad825b4ab2c5e7cd641e383, type: 3}
+      propertyPath: _projectilePrefabs.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5076617722959906162, guid: 4f9089b65ad825b4ab2c5e7cd641e383, type: 3}
+      propertyPath: _projectilePrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 2675222265695702198, guid: dbe648938bac15c44986b8d4df816762, type: 3}
+    - target: {fileID: 5076617722959906162, guid: 4f9089b65ad825b4ab2c5e7cd641e383, type: 3}
+      propertyPath: _projectilePrefabs.Array.data[1]
+      value: 
+      objectReference: {fileID: 2675222265695702198, guid: d1d9731a31fd05e48b6c2d2bdc474b65, type: 3}
     - target: {fileID: 6957105514633201542, guid: 4f9089b65ad825b4ab2c5e7cd641e383, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Entities
 {
@@ -6,14 +9,15 @@ namespace Entities
     {
         [SerializeField] private GameObject _targetPrefab;
         [SerializeField] private GameObject _aimer;
-        [SerializeField] private GameObject _projectilePrefab;
+        [SerializeField] private List<ProjectileController> _projectilePrefabs;
+        
+        [SerializeField] private bool _fixedTargetDistance = true;
+        [SerializeField] private float _targetDistance = 1f;
         
         [SerializeField] private float _maxAmmo = 100f;
         [SerializeField] private float _startingAmmo = 100f;
-    
-        [SerializeField] private float _projectileSpeed = 2f;
-        [SerializeField] private float _projectileOffset = 1.5f;
-        [SerializeField] private float _projectileDelay = 0.1f;
+
+        private int _currentProjectileIndex = 0;
         
         private float _timeSinceProjectile = 0f;
         private GameObject _target;
@@ -39,39 +43,58 @@ namespace Entities
             
             HandleProjectile();
         }
-        
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                UpdateAmmo(10f);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                _currentProjectileIndex = 0;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                _currentProjectileIndex = 1;
+            }
+        }
+
         private void HandleProjectile()
         {
             if (Input.GetMouseButton(0))
             {
                 if(_startingAmmo > 0 && _timeSinceProjectile <= 0.0f)
                 {
-                    var projectile = Instantiate(_projectilePrefab);
-                    projectile.transform.rotation = _aimer.transform.rotation;
-                    projectile.transform.position =
-                        _aimer.transform.position + _projectileOffset * projectile.transform.right;
-                    var rb = projectile.GetComponent<Rigidbody2D>();
-                    rb.velocity = projectile.transform.right * _projectileSpeed;
-                    _timeSinceProjectile = _projectileDelay;
+                    ProjectileController projectile = Instantiate(_projectilePrefabs[_currentProjectileIndex]);
+                    projectile.IntializeProjectile(_aimer.transform);
+                    _timeSinceProjectile = projectile.GetDelay();
                     _startingAmmo--;
                     _playerAmmoUi.UpdateAmmoValueText(_startingAmmo);
                 }
                 _timeSinceProjectile -= Time.fixedDeltaTime;
             } 
-        
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                UpdateAmmo(10f);
-            }
         }
         
         private void HandleTarget()
         {
             var mousPos = Input.mousePosition;
             var worldPos = Camera.main.ScreenToWorldPoint(mousPos);
-        
-            _target.transform.position = new Vector3(worldPos.x, worldPos.y, 0);
-        
+            
+            if(_fixedTargetDistance)
+            {
+                var directionVector = new Vector3(worldPos.x, worldPos.y, 0) - transform.position;
+                directionVector.Normalize();
+
+                Debug.Log($"[{GetType().Name}] MouseMos: {worldPos} Direction: {directionVector}]");
+                _target.transform.position = transform.position + (directionVector * _targetDistance);
+            }
+            else
+            {
+                _target.transform.position = new Vector3(worldPos.x, worldPos.y, 0);
+            }
+            
             _aimer.transform.right = _target.transform.position - transform.position;
         }
         
