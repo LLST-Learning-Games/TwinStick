@@ -10,6 +10,7 @@ namespace Entities
         [SerializeField] private GameObject _targetPrefab;
         [SerializeField] private GameObject _aimer;
         [SerializeField] private List<ProjectileController> _projectilePrefabs;
+        [SerializeField] private Animator _upperBodyAnimator;
         
         [SerializeField] private bool _fixedTargetDistance = true;
         [SerializeField] private float _targetDistance = 1f;
@@ -86,6 +87,12 @@ namespace Entities
             {
                 var directionVector = new Vector3(worldPos.x, worldPos.y, 0) - transform.position;
                 directionVector.Normalize();
+                
+                if (_upperBodyAnimator)
+                {
+                    _upperBodyAnimator.SetFloat("X", directionVector.x);
+                    _upperBodyAnimator.SetFloat("Y", directionVector.y);
+                }
 
                 Debug.Log($"[{GetType().Name}] MouseMos: {worldPos} Direction: {directionVector}]");
                 _target.transform.position = transform.position + (directionVector * _targetDistance);
@@ -93,6 +100,17 @@ namespace Entities
             else
             {
                 _target.transform.position = new Vector3(worldPos.x, worldPos.y, 0);
+                
+                var directionVector = new Vector3(worldPos.x, worldPos.y, 0) - transform.position;
+                directionVector.Normalize();
+                
+                Debug.Log(directionVector);
+                
+                if (_upperBodyAnimator)
+                {
+                    _upperBodyAnimator.SetFloat("X", directionVector.x);
+                    _upperBodyAnimator.SetFloat("Y", directionVector.y);
+                }
             }
             
             _aimer.transform.right = _target.transform.position - transform.position;

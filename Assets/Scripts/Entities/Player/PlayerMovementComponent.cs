@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerMovementComponent : EntityComponent
 {
     [SerializeField] private float _moveSpeed = 1.5f;
+    [SerializeField] private Animator _lowerBodyAnimator;
     
     private PlayerController _playerController;
 
@@ -35,6 +36,12 @@ public class PlayerMovementComponent : EntityComponent
         if (Input.GetKey(KeyCode.D))
         {
             movement += Vector3.right;
+        }
+
+        if (_lowerBodyAnimator)
+        {
+            _lowerBodyAnimator.SetFloat("X", movement.x);
+            _lowerBodyAnimator.SetFloat("Y", movement.y);
         }
         transform.position += movement * Time.deltaTime * _moveSpeed;
     }
