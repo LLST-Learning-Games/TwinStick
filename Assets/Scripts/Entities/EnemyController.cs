@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -10,8 +11,13 @@ public class EnemyController : MonoBehaviour
 
     [SerializeField] private GameObject[] _dropPrefabs;
     [Range(0,1)] [SerializeField] private float _dropOdds;
+
+    [SerializeField] private SpriteRenderer _sprite;
+    [SerializeField] private float _deathFadeoutTime = 2f;
     
+    public bool IsDead { get; private set; }
     private GameObject _targetObject;
+    
     
     private void Awake()
     {
@@ -20,6 +26,11 @@ public class EnemyController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (IsDead)
+        {
+            return;
+        }
+        
         var movementVector = _targetObject.transform.position - transform.position;
         movementVector.Normalize(); 
         movementVector *= _moveSpeed * Time.deltaTime;
@@ -27,7 +38,10 @@ public class EnemyController : MonoBehaviour
         transform.position += movementVector;
     }
 
-    public float GetDamage() => _playerDamage;
+    public float GetDamage()
+    {
+        return IsDead ? _playerDamage : 0f;
+    }
 
     public void KickBack()
     {
@@ -51,4 +65,29 @@ public class EnemyController : MonoBehaviour
         
         Instantiate(drop, transform.position, Quaternion.identity);
     }
+
+    public void OnDie()
+    {
+        if (IsDead)
+        {
+            return;
+        }
+        IsDead = true;
+        HandlePickupDrop();
+        StartCoroutine(OnDieCoroutine());
+    }
+
+    private IEnumerator OnDieCoroutine()
+    {
+        float time = 0f;
+        while (time < _deathFadeoutTime)
+        {
+            time += Time.deltaTime;
+            _sprite.material.SetFloat("_DissolveAmount", time / _deathFadeoutTime);
+            yield return null;
+        }
+        Destroy(this.gameObject);
+    }
+    
+    
 }
