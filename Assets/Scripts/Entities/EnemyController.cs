@@ -40,7 +40,7 @@ public class EnemyController : MonoBehaviour
 
     public float GetDamage()
     {
-        return IsDead ? _playerDamage : 0f;
+        return IsDead ? 0f : _playerDamage;
     }
 
     public void KickBack()
